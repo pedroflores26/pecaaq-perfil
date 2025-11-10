@@ -1,0 +1,138 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #0d1117, #161b22);
+  color: #f0f6fc;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  width: 100%;
+  background: #21262d;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+  box-shadow: 0 0 10px #000;
+}
+
+.header h1 {
+  font-size: 1.4rem;
+  color: #58a6ff;
+}
+
+.header button {
+  background: #ff4d4d;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.header button:hover {
+  background: #ff1a1a;
+}
+
+.perfil-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
+
+.perfil-card {
+  background: #21262d;
+  border-radius: 16px;
+  padding: 30px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+.foto-perfil img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px solid #58a6ff;
+  object-fit: cover;
+}
+
+.btn-upload {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 6px 12px;
+  background: #30363d;
+  border-radius: 6px;
+  color: #58a6ff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: 0.3s;
+}
+.btn-upload:hover {
+  background: #58a6ff;
+  color: #0d1117;
+}
+
+.info-perfil {
+  margin-top: 20px;
+  text-align: left;
+  line-height: 1.8;
+}
+
+.info-perfil h2 {
+  text-align: center;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.botoes {
+  margin-top: 20px;
+}
+
+.botoes button {
+  margin: 5px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+#editarBtn {
+  background: #58a6ff;
+  color: #0d1117;
+}
+
+#salvarBtn {
+  background: #2ea043;
+  color: #fff;
+}
+
+#editarBtn:hover {
+  background: #1f6feb;
+}
+
+#salvarBtn:hover {
+  background: #238636;
+}
+
+.hidden {
+  display: none;
+}
+
+.input-edit {
+  width: 100%;
+  background: #0d1117;
+  color: #f0f6fc;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 5px;
+}

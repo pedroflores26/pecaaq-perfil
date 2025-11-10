@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro de Produtos - Empresas</title>
+  <link rel="stylesheet" href="styleEmpresas.css">
+</head>
+
+<body>
+
+  <header>
+    <h1>Cadastro de Produtos</h1>
+           <div id="user-area">Faça seu cadastro</div>
+
+
+  </header>
+
+  <main>
+    <form id="formProduto" action="processaProduto.php" method="POST" enctype="multipart/form-data">
+      <label for="nome">Nome do Produto:</label>
+      <input type="text" id="nome" name="nome" required>
+
+      <label for="sku">SKU Universal:</label>
+      <input type="text" id="sku" name="sku">
+
+      <label for="marca">Marca:</label>
+      <input type="text" id="marca" name="marca">
+
+      <label for="descricao">Descrição Técnica:</label>
+      <textarea id="descricao" name="descricao" rows="4"></textarea>
+
+      <label for="categoria">Categoria:</label>
+      <input type="text" id="categoria" name="categoria" placeholder="Ex: Freios, Óleo">
+
+      <label for="preco">Preço (R$):</label>
+      <input type="text" id="preco" name="preco" required>
+
+      <label for="foto">Foto do Produto:</label>
+      <input type="file" id="foto" name="foto" accept="image/*" required>
+
+      <button type="submit">Cadastrar Produto</button>
+    </form>
+
+    <hr>
+
+    <section id="produtosCadastrados">
+      <h2>Produtos Cadastrados</h2>
+      <iframe src="indexEmpresas.php" frameborder="0" width="100%" height="500px"></iframe>
+    </section>
+<script src="../headerProfile.js"></script>
+<!-- ou o caminho relativo correto no seu projeto -->
+<script src="app.js"></script>
+  </main>
+
+</body>
+
+</html>

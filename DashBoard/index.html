@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard da Empresa - PeçaAq</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+ 
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <img src="img/logo.png" alt="Logo PeçaAq">
+      <h2>PEÇAAQ</h2>
+    </div>
+    <nav>
+      <a href="#" class="active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+      <a href="#"><i class="fa-regular fa-user"></i> Perfil</a>
+      <a href="#"><i class="fa-solid fa-plus"></i> Adicionar</a>
+    </nav>
+  </div>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <header>
+      <h1>DASHBOARD</h1>
+      <div class="header-right">
+        <i class="fa-regular fa-bell"></i>
+        <span class="empresa-nome">Auto Peças Silva</span>
+        <i class="fa-regular fa-circle-user"></i>
+      </div>
+    </header>
+
+    <!-- Dashboard -->
+    <section id="sec-dashboard">
+      <div class="cards">
+        <div class="card">
+          <h3>Total de Vendas</h3>
+          <p class="valor">R$ 1.000,00</p>
+        </div>
+        <div class="card">
+          <h3>Produtos em estoque</h3>
+          <p class="valor" id="totalProdutos">0</p>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="tabela-produtos">
+          <h3>Produtos</h3>
+          <input type="text" id="search" placeholder="🔍 Pesquise...">
+          <table>
+            <thead>
+              <tr>
+                <th>Imagem</th>
+                <th>Nome</th>
+                <th>Preço</th>
+              </tr>
+            </thead>
+            <tbody id="lista-produtos"></tbody>
+          </table>
+        </div>
+
+        <div class="grafico">
+          <h3>Dados de Vendas</h3>
+          <canvas id="graficoVendas"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Perfil -->
+    <section id="sec-perfil" class="perfil" style="display:none;">
+      <h3>Perfil da Empresa</h3>
+      <p><strong>Nome da Empresa:</strong> Auto Peças Silva</p>
+      <p><strong>CNPJ:</strong> 12.345.678/0001-90</p>
+      <p><strong>Email:</strong> contato@autopecassilva.com</p>
+      <p><strong>Telefone:</strong> (11) 99999-9999</p>
+    </section>
+
+    <!-- Adicionar Produto -->
+    <section id="sec-adicionar" style="display:none;">
+      <h3>Adicionar Produto</h3>
+      <form id="formProduto" enctype="multipart/form-data">
+        <label for="nome">Nome do Produto:</label>
+        <input type="text" id="nome" name="nome" required>
+
+        <label for="sku">SKU Universal:</label>
+        <input type="text" id="sku" name="sku">
+
+        <label for="marca">Marca:</label>
+        <input type="text" id="marca" name="marca">
+
+        <label for="descricao">Descrição Técnica:</label>
+        <textarea id="descricao" name="descricao" rows="4"></textarea>
+
+        <label for="preco">Preço (R$):</label>
+        <input type="text" id="preco" name="preco" required>
+
+        <label for="foto">Foto do Produto:</label>
+        <input type="file" id="foto" name="foto" accept="image/*" required>
+        <div id="fotoPreview" style="margin-top:10px; width:200px; height:150px; border:1px dashed #ccc; display:flex; align-items:center; justify-content:center;"><span>+</span></div>
+
+        <button type="submit">Cadastrar Produto</button>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    // Alternar seções
+    const links = document.querySelectorAll('.sidebar nav a');
+    const secDashboard = document.getElementById('sec-dashboard');
+    const secPerfil = document.getElementById('sec-perfil');
+    const secAdicionar = document.getElementById('sec-adicionar');
+
+    links.forEach((link, idx) => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        secDashboard.style.display = 'none';
+        secPerfil.style.display = 'none';
+        secAdicionar.style.display = 'none';
+        links.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        if(idx === 0) secDashboard.style.display = 'block';
+        if(idx === 1) secPerfil.style.display = 'block';
+        if(idx === 2) secAdicionar.style.display = 'block';
+      });
+    });
+
+    
+
+    // Filtro de pesquisa
+    document.getElementById('search').addEventListener('input', e => {
+      const termo = e.target.value.toLowerCase();
+      document.querySelectorAll('#lista-produtos tr').forEach(tr => {
+        const nome = tr.children[1].textContent.toLowerCase();
+        tr.style.display = nome.includes(termo) ? 'table-row' : 'none';
+      });
+    });
+
+    // LISTAR produtos (usa o novo formato JSON)
+async function listarProdutos() {
+  try {
+    const resp = await fetch('listarProdutos.php');
+    const json = await resp.json();
+    if (!json || json.status !== 'ok') {
+      console.error('listarProdutos: resposta inválida', json);
+      return;
+    }
+    const produtos = json.produtos || [];
+    const tbody = document.getElementById('lista-produtos');
+    tbody.innerHTML = '';
+    produtos.forEach(p => {
+      tbody.innerHTML += `
+        <tr>
+          <td><img src="${p.foto_principal}" width="50" style="border-radius:4px;"></td>
+          <td>${p.nome}</td>
+          <td>R$ ${parseFloat(p.preco).toFixed(2)}</td>
+        </tr>
+      `;
+    });
+    document.getElementById('totalProdutos').textContent = produtos.length;
+  } catch (err) {
+    console.error('Erro ao listar produtos:', err);
+  }
+}
+
+// CADASTRO via AJAX (espera JSON)
+const form = document.getElementById('formProduto');
+const fotoPreview = document.getElementById('fotoPreview');
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const formData = new FormData(form);
+  try {
+    const resp = await fetch('processaProduto.php', { method: 'POST', body: formData });
+    const json = await resp.json();
+    if (!json) throw new Error('Resposta inválida do servidor');
+    if (json.status === 'ok') {
+      alert(json.message || 'Produto cadastrado');
+      form.reset();
+      fotoPreview.innerHTML = '<span>+</span>';
+      listarProdutos();
+    } else {
+      alert('Erro: ' + (json.message || 'Falha ao cadastrar'));
+    }
+  } catch (err) {
+    console.error('Erro ao cadastrar produto:', err);
+    alert('Erro ao cadastrar produto. Veja console.');
+  }
+});
+
+
+    // Preview da imagem
+    document.getElementById('foto').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if(file){
+        const reader = new FileReader();
+        reader.onload = ev => fotoPreview.innerHTML = `<img src="${ev.target.result}" style="width:100%; height:100%; object-fit:cover; border-radius:8px;">`;
+        reader.readAsDataURL(file);
+      } else {
+        fotoPreview.innerHTML = '<span>+</span>';
+      }
+    });
+
+    // Gráfico de vendas
+    new Chart(document.getElementById("graficoVendas"), {
+      type: 'bar',
+      data: {
+        labels: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+        datasets: [
+          { label: 'Vendas', data: [300,400,350,500,480,600,580,540,570,610,620,630], backgroundColor: 'limegreen' },
+          { label: 'Itens', data: [200,250,240,300,280,350,340,320,330,360,370,380], backgroundColor: 'red' }
+        ]
+      },
+      options: { responsive:true, scales:{ y:{ beginAtZero:true } } }
+    });
+
+    // Inicializa lista de produtos ao abrir página
+    window.addEventListener('load', listarProdutos);
+  </script>
+<script src="../headerProfile.js"></script>
+
+</body>
+</html>
